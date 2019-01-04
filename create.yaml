@@ -6,7 +6,7 @@
 
 - import_playbook: kubespray/cluster.yml
 
-- hosts: k8s-master[0]
+- hosts: kube-master[0]
   gather_facts: false
   roles:
   - { role: get-kube-config }

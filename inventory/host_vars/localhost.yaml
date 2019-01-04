@@ -1,5 +1,6 @@
 ---
-connection: local
+ansible_python_interpreter: '{{ansible_playbook_python}}'
+ansible_connection: local
 virt_images: /var/lib/libvirt/images/
 virt_uri: qemu:///system
 ...

@@ -1,0 +1,8 @@
+ansible==2.6.2
+grpcio
+hvac
+jinja2>=2.9.6
+netaddr
+openshift
+pbr>=1.6
+pyhelm

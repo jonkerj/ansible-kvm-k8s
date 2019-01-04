@@ -1,0 +1,13 @@
+---
+- name: Make kube directory
+  file:
+    path: "{{ lookup('env','HOME') }}/.kube/"
+    state: directory
+    mode: 0755
+
+- name: Retrieve kube config
+  fetch:
+    src: /root/.kube/config
+    dest: "{{ lookup('env','HOME') }}/.kube/config"
+    flat: yes
+...

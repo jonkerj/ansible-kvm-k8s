@@ -1,0 +1,63 @@
+---
+- name: Create tiller service account
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: tiller
+        namespace: kube-system
+
+- name: Create tiller cluster role binding
+  k8s:
+    state: present
+    definition:
+      kind: ClusterRoleBinding
+      apiVersion: rbac.authorization.k8s.io/v1beta1
+      metadata:
+        name: tiller-clusterrolebinding
+      subjects:
+      - kind: ServiceAccount
+        name: tiller
+        namespace: kube-system
+      roleRef:
+        kind: ClusterRole
+        name: cluster-admin
+        apiGroup: ""
+
+- name: Check Tiller presence
+  shell: kubectl get deployment -n kube-system tiller-deploy
+  register: tiller
+  ignore_errors: yes
+
+- name: Initialize Tiller
+  when: tiller.rc != "0"
+  block:
+  - name: Create temporary directory to download Helm
+    tempfile:
+      path: /tmp/
+      state: directory
+    register: tempdir
+
+  - name: Download Helm binary
+    get_url:
+      url: "{{ helm_tarball_url }}"
+      dest: "{{ tempdir.path }}/helm.tgz"
+
+  - name: Extract Helm
+    unarchive:
+      src: "{{ tempdir.path }}/helm.tgz"
+      dest: "{{ tempdir.path }}/"
+
+  - name: Initialize Tiller
+    command: "{{ tempdir.path }}/linux-amd64/helm init --service-account tiller"
+
+  - name: Remove temporary directory
+    file:
+      path: "{{ tempdir.path }}"
+      state: absent
+
+  - name: Wait for Tiller to become ready
+    command: "kubectl rollout status -w -n kube-system deployment/tiller-deploy"
+...
