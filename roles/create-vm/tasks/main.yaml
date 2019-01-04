@@ -1,0 +1,4 @@
+---
+- include_tasks: images.yaml
+- include_tasks: vms.yaml
+...

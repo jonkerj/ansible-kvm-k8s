@@ -1,0 +1,5 @@
+---
+connection: local
+virt_images: /var/lib/libvirt/images/
+virt_uri: qemu:///system
+...

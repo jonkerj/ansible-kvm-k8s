@@ -1,0 +1,25 @@
+---
+- name: List VMs
+  delegate_to: "{{ virt_host }}"
+  run_once: yes
+  virt:
+    command: list_vms
+    uri: "{{ hostvars[virt_host].virt_uri }}"
+  register: vms
+
+- name: Create VM
+  delegate_to: "{{ virt_host }}"
+  when: inventory_hostname not in vms.list_vms
+  virt:
+    name: "{{ inventory_hostname }}"
+    command: define
+    uri: "{{ hostvars[virt_host].virt_uri }}"
+    xml: "{{ lookup('template', 'kubus-node.xml.j2') }}"
+
+- name: Start VM
+  delegate_to: "{{ virt_host }}"
+  virt:
+    name: "{{ inventory_hostname }}"
+    state: running
+    uri: "{{ hostvars[virt_host].virt_uri }}"
+...
