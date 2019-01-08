@@ -1,4 +1,13 @@
 ---
 - include_tasks: images.yaml
 - include_tasks: vms.yaml
+- name: Wait a bit
+  pause:
+    seconds: 20
+- name: Wait for VM to be reachable
+  delegate_to: localhost
+  wait_for:
+    host: "{% if ansible_ssh_host is defined %}{{ ansible_ssh_host }}{% else %}{{ inventory_hostname }}{% endif %}"
+    timeout: 60
+    port: 22
 ...
