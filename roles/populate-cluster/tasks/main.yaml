@@ -1,3 +1,15 @@
 ---
+- name: Create tempdir
+  tempfile:
+    path: /tmp/
+    state: directory
+  register: populate_tempdir
+  
 - include_tasks: tiller.yaml
+- include_tasks: traefik.yaml
+
+- name: Remove tempdir
+  file:
+    path: "{{ populate_tempdir.path }}"
+    state: absent
 ...

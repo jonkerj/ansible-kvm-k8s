@@ -1,0 +1,12 @@
+---
+serviceType: NodePort
+service:
+  nodePorts:
+    http: 30080
+    https: 30443
+dashboard:
+  enabled: true
+  domain: {{ kube_traefik_dashboard_domain }}
+rbac:
+  enabled: true
+...

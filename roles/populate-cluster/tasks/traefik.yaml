@@ -1,0 +1,9 @@
+---
+- name: Template values.yaml
+  template:
+    src: traefik-values.yaml.j2
+    dest: "{{ populate_tempdir.path }}/traefik-values.yaml"
+
+- name: Install Traefik helm chart
+  command: "helm install -f {{ populate_tempdir.path }}/traefik-values.yaml --namespace traefik -n traefik stable/traefik"
+...
