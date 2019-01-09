@@ -31,32 +31,24 @@
   register: tiller
   ignore_errors: yes
 
-- name: Initialize Tiller
-  when: tiller.rc != "0"
-  block:
-  - name: Create temporary directory to download Helm
-    tempfile:
-      path: /tmp/
-      state: directory
-    register: tempdir
+- debug:
+    var: tiller.rc
 
+- name: Initialize Tiller
+  when: tiller.rc != 0
+  block:
   - name: Download Helm binary
     get_url:
       url: "{{ helm_tarball_url }}"
-      dest: "{{ tempdir.path }}/helm.tgz"
+      dest: "{{ populate_tempdir.path }}/helm.tgz"
 
   - name: Extract Helm
     unarchive:
-      src: "{{ tempdir.path }}/helm.tgz"
-      dest: "{{ tempdir.path }}/"
+      src: "{{ populate_tempdir.path }}/helm.tgz"
+      dest: "{{ populate_tempdir.path }}/"
 
   - name: Initialize Tiller
-    command: "{{ tempdir.path }}/linux-amd64/helm init --service-account tiller"
-
-  - name: Remove temporary directory
-    file:
-      path: "{{ tempdir.path }}"
-      state: absent
+    command: "{{ populate_tempdir.path }}/linux-amd64/helm init --service-account tiller"
 
   - name: Wait for Tiller to become ready
     command: "kubectl rollout status -w -n kube-system deployment/tiller-deploy"
