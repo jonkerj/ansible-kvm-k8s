@@ -5,6 +5,7 @@ ansible_user: core
 bin_dir: /opt/bin
 coreos_image_url: https://stable.release.core-os.net/amd64-usr/current/coreos_production_qemu_image.img.bz2
 etcd_data_dir: /var/lib/etcd
+helm_enabled: true
 kube_base_image: kube-base
 kube_bridge: br0
 kube_gateway: 172.21.45.1

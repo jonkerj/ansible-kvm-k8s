@@ -4,8 +4,10 @@
     path: /tmp/
     state: directory
   register: populate_tempdir
+
+- name: Wait for Tiller to become ready
+  command: "kubectl rollout status -w -n kube-system deployment/tiller-deploy"
   
-- include_tasks: tiller.yaml
 - include_tasks: traefik.yaml
 
 - name: Remove tempdir
