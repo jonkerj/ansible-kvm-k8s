@@ -3,7 +3,7 @@
   delegate_to: "{{ virt_host }}"
   run_once: yes
   stat:
-    path: "{{ hostvars[virt_host].virt_images }}/{{ kube_base_image }}.qcow2"
+    path: "{{ hostvars[virt_host].virt_images }}/{{ virt_base_image }}.qcow2"
   register: backing_result
 
 - name: Create base image
@@ -23,7 +23,7 @@
       force: yes
 
   - name: Extract CoreOS image
-    shell: "bunzip2 < {{ tempfile.path }} > {{ hostvars[virt_host].virt_images }}/{{ kube_base_image }}.qcow2"
+    shell: "bunzip2 < {{ tempfile.path }} > {{ hostvars[virt_host].virt_images }}/{{ virt_base_image }}.qcow2"
 
   - name: Remove temporary file
     file:
@@ -32,7 +32,7 @@
 
 - name: Create snapshot file
   delegate_to: "{{ virt_host }}"
-  command: "qemu-img create -f qcow2 -b {{ hostvars[virt_host].virt_images }}/{{ kube_base_image }}.qcow2 {{ hostvars[virt_host].virt_images }}/{{ inventory_hostname }}.qcow2"
+  command: "qemu-img create -f qcow2 -b {{ hostvars[virt_host].virt_images }}/{{ virt_base_image }}.qcow2 {{ hostvars[virt_host].virt_images }}/{{ inventory_hostname }}.qcow2"
   args:
     creates: "{{ hostvars[virt_host].virt_images }}/{{ inventory_hostname }}.qcow2"
 

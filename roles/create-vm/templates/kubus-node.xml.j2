@@ -1,8 +1,8 @@
 <domain xmlns:qemu="http://libvirt.org/schemas/domain/qemu/1.0" type="kvm">
   <name>{{ inventory_hostname }}</name>
-  <memory>{{ kube_memory_gb * 1024 * 1024 }}</memory>
-  <currentMemory>{{ kube_memory_gb * 1024 * 1024 }}</currentMemory>
-  <vcpu>{{ kube_vcpu }}</vcpu>
+  <memory>{{ virt_memory_gb * 1024 * 1024 }}</memory>
+  <currentMemory>{{ virt_memory_gb * 1024 * 1024 }}</currentMemory>
+  <vcpu>{{ virt_vcpu }}</vcpu>
   <os>
     <type arch="x86_64">hvm</type>
     <boot dev="hd"/>
@@ -41,7 +41,7 @@
       <master startport="4"/>
     </controller>
     <interface type="bridge">
-      <source bridge="{{ kube_bridge }}"/>
+      <source bridge="{{ virt_bridge }}"/>
       <model type="virtio"/>
     </interface>
     <graphics type="vnc" port="-1" listen="127.0.0.1"/>

@@ -8,7 +8,7 @@ passwd:
   users:
   - name: "core"
     ssh_authorized_keys:
-    - {{ kube_ssh_key }}
+    - {{ virt_ssh_key }}
 networkd:
   units:
   - name: 00-eth0.network
@@ -19,5 +19,5 @@ networkd:
       [Network]
       DNS=77.222.77.222
       DNS=87.249.121.121
-      Address={{ ansible_host }}/{{ kube_prefix_length }}
-      Gateway={{ kube_gateway }}
+      Address={{ ansible_host }}/{{ virt_prefix_length }}
+      Gateway={{ virt_gateway }}
