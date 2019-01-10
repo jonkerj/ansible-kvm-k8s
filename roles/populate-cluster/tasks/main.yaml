@@ -10,6 +10,8 @@
   
 - include_tasks: traefik.yaml
 
+- include_tasks: dashboard.yaml
+
 - name: Remove tempdir
   file:
     path: "{{ populate_tempdir.path }}"

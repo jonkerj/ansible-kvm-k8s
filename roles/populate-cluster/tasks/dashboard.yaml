@@ -1,0 +1,20 @@
+---
+- name: Install dashboard ingress
+  k8s:
+    state: present
+    definition:
+      apiVersion: extensions/v1beta1
+      kind: Ingress
+      metadata:
+        namespace: kube-system
+        name: dashboard-ingress
+      spec:
+        rules:
+        - host: dashboard.k8s.efgh.nl
+          http:
+            paths:
+            - path: /
+              backend:
+                serviceName: kubernetes-dashboard
+                servicePort: 443
+...
