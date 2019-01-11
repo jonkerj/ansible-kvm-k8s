@@ -9,6 +9,15 @@
       chart: stable/traefik
       values_template: traefik-values.yaml.j2
 
+- name: Install Metrics Server
+  include_role:
+    name: helmchart
+  vars:
+    helm:
+      release_name: metrics
+      namespace: kube-system
+      chart: stable/metrics-server
+
 - name: Fix Kubernetes Dashboard
   include_tasks: dashboard.yaml
 ...
