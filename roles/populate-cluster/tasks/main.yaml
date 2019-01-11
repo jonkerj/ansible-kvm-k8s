@@ -1,4 +1,13 @@
 ---
-- include_tasks: traefik.yaml
+- name: Install Traefik Helm chart
+  include_role:
+    name: helmchart
+  vars:
+    helm:
+      release_name: traefik
+      namespace: traefik
+      chart: stable/traefik
+      values_template: traefik-values.yaml.j2
+
 - include_tasks: dashboard.yaml
 ...
