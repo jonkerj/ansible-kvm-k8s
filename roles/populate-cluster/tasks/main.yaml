@@ -1,19 +1,4 @@
 ---
-- name: Create tempdir
-  tempfile:
-    path: /tmp/
-    state: directory
-  register: populate_tempdir
-
-- name: Wait for Tiller to become ready
-  command: "kubectl rollout status -w -n kube-system deployment/tiller-deploy"
-  
 - include_tasks: traefik.yaml
-
 - include_tasks: dashboard.yaml
-
-- name: Remove tempdir
-  file:
-    path: "{{ populate_tempdir.path }}"
-    state: absent
 ...
