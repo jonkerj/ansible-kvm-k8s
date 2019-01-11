@@ -1,0 +1,6 @@
+---
+- hosts: kube-master
+  gather_facts: false
+  roles:
+  - { role: create-vm }
+...

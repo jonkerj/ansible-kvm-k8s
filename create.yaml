@@ -1,18 +1,6 @@
 ---
-- hosts: kube-master
-  gather_facts: false
-  roles:
-  - { role: create-vm }
-
+- import_playbook: infra.yaml
 - import_playbook: kubespray/cluster.yml
-
-- hosts: kube-master[0]
-  gather_facts: false
-  roles:
-  - { role: get-kube-config }
-
-- hosts: localhost
-  gather_facts: false
-  roles:
-  - { role: populate-cluster }
+- import_playbook: kubeconfig.yaml
+- import_playbook: populate.yaml
 ...
