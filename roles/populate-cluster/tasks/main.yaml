@@ -1,5 +1,5 @@
 ---
-- name: Install Traefik Helm chart
+- name: Install Traefik
   include_role:
     name: helmchart
   vars:
@@ -9,5 +9,6 @@
       chart: stable/traefik
       values_template: traefik-values.yaml.j2
 
-- include_tasks: dashboard.yaml
+- name: Fix Kubernetes Dashboard
+  include_tasks: dashboard.yaml
 ...
