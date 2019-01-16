@@ -5,7 +5,7 @@
   vars:
     helm:
       release_name: nfs
-      namespace: kube-system
+      namespace: nfs
       chart: stable/nfs-client-provisioner
       values_template: nfs-values.yaml.j2
 
