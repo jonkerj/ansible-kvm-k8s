@@ -4,11 +4,17 @@ service:
   nodePorts:
     http: 30080
     https: 30443
+acme:
+  challengeType: http-01
+  enabled: true
+  email: {{ traefik_acme_email }}
+  staging: false
 dashboard:
   enabled: true
   domain: {{ traefik_dashboard_domain }}
 rbac:
   enabled: true
 ssl:
+  enabled: true
   insecureSkipVerify: true
 ...
