@@ -1,3 +1,6 @@
 ---
 traefik_dashboard_domain: traefik.k8s.efgh.nl
+nfs:
+  server: 172.21.45.1
+  path: /srv/k8s
 ...

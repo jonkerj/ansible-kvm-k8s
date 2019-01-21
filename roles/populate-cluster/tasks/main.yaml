@@ -1,4 +1,14 @@
 ---
+- name: Install NFS Client Provisioner
+  include_role:
+    name: helmchart
+  vars:
+    helm:
+      release_name: nfs
+      namespace: kube-system
+      chart: stable/nfs-client-provisioner
+      values_template: nfs-values.yaml.j2
+
 - name: Install Traefik
   include_role:
     name: helmchart
