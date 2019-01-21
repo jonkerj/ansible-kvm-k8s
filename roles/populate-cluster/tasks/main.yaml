@@ -19,6 +19,15 @@
       chart: stable/traefik
       values_template: traefik-values.yaml.j2
 
+- name: Install Heapster
+  include_role:
+    name: helmchart
+  vars:
+    helm:
+      release_name: heapster
+      namespace: kube-system
+      chart: stable/heapster
+
 - name: Install Metrics Server
   include_role:
     name: helmchart
