@@ -28,15 +28,6 @@
       namespace: kube-system
       chart: stable/heapster
 
-- name: Install Metrics Server
-  include_role:
-    name: helmchart
-  vars:
-    helm:
-      release_name: metrics
-      namespace: kube-system
-      chart: stable/metrics-server
-
 - name: Fix Kubernetes Dashboard
   include_tasks: dashboard.yaml
 ...
