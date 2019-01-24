@@ -1,5 +1,6 @@
 ---
 - name: Make kube directory
+  delegate_to: localhost
   file:
     path: "{{ lookup('env','HOME') }}/.kube/"
     state: directory

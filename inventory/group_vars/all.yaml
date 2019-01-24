@@ -1,6 +1,10 @@
 ---
+apiserver_loadbalancer_domain_name: "k8s.efgh.nl"
 helm_values_dir: '{{ inventory_dir }}/../helm-values'
 kube_read_only_port: 10255
+loadbalancer_apiserver:
+  address: 185.76.17.60
+  port: 6443
 nfs_shares:
 - name: sata
   server: 172.21.45.1
