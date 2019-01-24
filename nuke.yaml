@@ -1,0 +1,32 @@
+---
+- hosts: kube-master
+  gather_facts: false
+  tasks:
+  - name: shutdown VM
+    delegate_to: "{{ virt_host }}"
+    virt:
+      name: "{{ inventory_hostname }}"
+      state: destroyed
+      uri: "{{ hostvars[virt_host].virt_uri }}"
+  - name: undefine VM
+    delegate_to: "{{ virt_host }}"
+    virt:
+      name: "{{ inventory_hostname }}"
+      command: undefine
+      uri: "{{ hostvars[virt_host].virt_uri }}"
+  - name: remove snapshot
+    delegate_to: "{{ virt_host }}"
+    file:
+      path: "{{ hostvars[virt_host].virt_images }}/{{ inventory_hostname }}.qcow2"
+      state: absent
+  - name: remove ignition config
+    delegate_to: "{{ virt_host }}"
+    file:
+      path: "{{ hostvars[virt_host].virt_images }}/{{ inventory_hostname }}.ign"
+      state: absent
+  - name: remove SSH host key from cache
+    delegate_to: "{{ virt_host }}"
+    known_hosts:
+      name: "{{ inventory_hostname }}"
+      state: absent
+...
