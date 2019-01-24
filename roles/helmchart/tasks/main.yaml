@@ -1,4 +1,14 @@
 ---
+- name: Make sure helm values dir is present
+  file:
+    path: '{{ helm_values_dir }}'
+    state: directory
+
+- name: Template values.yaml
+  template:
+    src: "{{ helm.values_template }}"
+    dest: "{{ helm_values_dir }}/{{ helm.release_name }}.yaml"
+
 - name: Wait for Tiller to be ready
   command: "kubectl rollout status -w -n kube-system deployment/tiller-deploy"
   
@@ -6,26 +16,7 @@
   command: 'helm list ^{{ helm.release_name }}$'
   register: helm_list
 
-- name: Create temporary directory
-  tempfile:
-    path: /tmp/
-    state: directory
-  register: helm_tempdir
-  when: 'helm.release_name not in helm_list.stdout'
-
-- name: Template values.yaml
-  template:
-    src: "{{ helm.values_template }}"
-    dest: "{{ helm_tempdir.path }}/values.yaml"
-  when: 'helm.release_name not in helm_list.stdout'
-
 - name: Install Helm chart {{ helm.chart }}
-  command: "helm install -f {{ helm_tempdir.path }}/values.yaml --namespace {{ helm.namespace }} -n {{ helm.release_name }} {{ helm.chart }}"
-  when: 'helm.release_name not in helm_list.stdout'
-
-- name: Remove temporary directory
-  file:
-    path: "{{ helm_tempdir.path }}"
-    state: absent
+  command: "helm install -f {{ helm_values_dir }}/{{ helm.release_name }}.yaml --namespace {{ helm.namespace }} -n {{ helm.release_name }} {{ helm.chart }}"
   when: 'helm.release_name not in helm_list.stdout'
 ...

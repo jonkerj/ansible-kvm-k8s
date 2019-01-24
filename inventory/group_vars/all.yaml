@@ -1,4 +1,5 @@
 ---
+helm_values_dir: '{{ inventory_dir }}/../helm-values'
 kube_read_only_port: 10255
 nfs_shares:
 - name: sata
