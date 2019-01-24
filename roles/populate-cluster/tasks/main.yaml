@@ -1,13 +1,19 @@
 ---
-- name: Install NFS Client Provisioner
+- name: 'Install NFS Client Provisioner (sc {{ item.name }})'
   include_role:
     name: helmchart
   vars:
     helm:
-      release_name: nfs
+      release_name: 'nfs-{{ item.name }}'
       namespace: nfs
       chart: stable/nfs-client-provisioner
       values_template: nfs-values.yaml.j2
+    share:
+      class: 'nfs-{{ item.name }}'
+      server: '{{ item.server }}'
+      path: '{{ item.path }}'
+      default: '{{ item.default }}'
+  with_items: '{{ nfs_shares }}'
 
 - name: Install Traefik
   include_role:

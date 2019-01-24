@@ -1,8 +1,9 @@
 ---
 nfs:
-  server: {{ nfs.server }}
-  path: {{ nfs.path }}
+  server: {{ share.server }}
+  path: {{ share.path }}
 storageClass:
-  defaultClass: true
+  name: {{ share.class }}
+  defaultClass: {{ share.default }}
   archiveOnDelete: false
 ...

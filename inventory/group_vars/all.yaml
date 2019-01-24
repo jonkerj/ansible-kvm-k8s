@@ -1,8 +1,14 @@
 ---
 kube_read_only_port: 10255
+nfs_shares:
+- name: sata
+  server: 172.21.45.1
+  path: /srv/k8s-sata
+  default: true
+- name: ssd
+  server: 172.21.45.1
+  path: /srv/k8s-ssd
+  default: false
 traefik_dashboard_domain: traefik.k8s.efgh.nl
 traefik_acme_email: jorik@kippendief.biz
-nfs:
-  server: 172.21.45.1
-  path: /srv/k8s
 ...
