@@ -8,12 +8,14 @@
       name: "{{ inventory_hostname }}"
       state: destroyed
       uri: "{{ hostvars[virt_host].virt_uri }}"
+    ignore_errors: yes
   - name: undefine VM
     delegate_to: "{{ virt_host }}"
     virt:
       name: "{{ inventory_hostname }}"
       command: undefine
       uri: "{{ hostvars[virt_host].virt_uri }}"
+    ignore_errors: yes
   - name: remove snapshot
     delegate_to: "{{ virt_host }}"
     file:
