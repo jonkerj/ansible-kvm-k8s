@@ -24,9 +24,18 @@
     file:
       path: "{{ hostvars[virt_host].virt_images }}/{{ inventory_hostname }}.ign"
       state: absent
+  - name: remove SSH hostkeys backup file
+    delegate_to: "{{ virt_host }}"
+    run_once: true
+    file:
+      path: "{{ lookup('env','HOME') }}/.ssh/known_hosts.old"
+      state: absent
   - name: remove SSH host key from cache
     delegate_to: "{{ virt_host }}"
     known_hosts:
-      name: "{{ inventory_hostname }}"
+      name: "{{ item }}"
       state: absent
+    with_items:
+    - "{{ inventory_hostname }}"
+    - "{{ ansible_host }}"
 ...
