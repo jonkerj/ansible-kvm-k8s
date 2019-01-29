@@ -14,7 +14,7 @@ upstream_dns_servers:
 - 77.222.77.222
 virt_base_image: kube-base
 virt_bridge: br0
-virt_vcpu: 2
+virt_vcpu: 1
 virt_gateway: 172.21.45.1
 virt_host: localhost
 virt_memory_gb: 4
