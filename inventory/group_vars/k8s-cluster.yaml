@@ -6,7 +6,7 @@ bin_dir: /opt/bin
 coreos_image_url: https://stable.release.core-os.net/amd64-usr/current/coreos_production_qemu_image.img.bz2
 etcd_data_dir: /var/lib/etcd
 helm_enabled: true
-kube_network_plugin: weave
+kube_network_plugin: calico
 kube_proxy_mode: iptables
 resolvconf_mode: host_resolvconf
 upstream_dns_servers:
