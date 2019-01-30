@@ -4,6 +4,95 @@ calico_node_cpu_requests: 50m
 dns_cpu_requests: 50m
 dns_min_replicas: 1
 helm_values_dir: '{{ inventory_dir }}/../helm-values'
+helm_charts:
+- name: 'NFS Client Provisioner (sata)'
+  release_name: 'nfs-sata'
+  namespace: nfs
+  src:
+    type: chart
+    chart: stable/nfs-client-provisioner
+  values:
+    nfs:
+      server: '{{ nfs_sata_server }}'
+      path: '{{ nfs_sata_share }}'
+    storageClass:
+      name: sata
+      defaultClass: true
+      archiveOnDelete: false
+    resources:
+      requests:
+        cpu: 50m
+- name: 'NFS Client Provisioner (ssd)'
+  release_name: 'nfs-ssd'
+  namespace: nfs
+  src:
+    type: chart
+    chart: stable/nfs-client-provisioner
+  values:
+    nfs:
+      server: '{{ nfs_ssd_server }}'
+      path: '{{ nfs_ssd_share }}'
+    storageClass:
+      name: ssd
+      defaultClass: false
+      archiveOnDelete: false
+    resources:
+      requests:
+        cpu: 50m
+- name: 'Traefik'
+  release_name: traefik
+  namespace: traefik
+  src:
+    type: chart
+    chart: stable/traefik
+  values:
+    serviceType: NodePort
+    service:
+      nodePorts:
+        http: 30080
+        https: 30443
+    acme:
+      challengeType: http-01
+      enabled: true
+      email: '{{ traefik_acme_email }}'
+      staging: false
+      logging: true
+    cpuRequest: 50m
+    dashboard:
+      enabled: true
+      domain: '{{ traefik_dashboard_domain }}'
+    rbac:
+      enabled: true
+    ssl:
+      enabled: true
+      insecureSkipVerify: true
+- name: 'Heapster'
+  release_name: heapster
+  namespace: kube-system
+  src:
+    type: chart
+    chart: stable/heapster
+  values:
+    resources:
+      requests:
+        cpu: 50m
+- name: 'Nextcloud'
+  release_name: nextcloud
+  namespace: nextcloud
+  src:
+    type: git
+    remote: https://github.com/jonkerj/chart-nextcloud.git
+    version: master
+  values:
+    nextcloudUsername: admin
+    nextcloudEmail: jorik@kippendief.biz
+    nextcloudHost: nc.k8s.efgh.nl
+    serviceType: ClusterIP
+    ingress: 
+      enabled: true
+    resources:
+      requests:
+        cpu: 50m
 kube_proxy_cpu_requests: 50m
 kube_read_only_port: 10255
 loadbalancer_apiserver:
