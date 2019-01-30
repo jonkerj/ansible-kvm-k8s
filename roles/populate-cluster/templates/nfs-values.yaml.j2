@@ -6,4 +6,7 @@ storageClass:
   name: {{ share.class }}
   defaultClass: {{ share.default }}
   archiveOnDelete: false
+resources:
+  requests:
+    cpu: 50m
 ...

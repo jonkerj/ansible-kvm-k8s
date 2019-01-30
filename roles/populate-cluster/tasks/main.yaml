@@ -33,6 +33,7 @@
       release_name: heapster
       namespace: kube-system
       chart: stable/heapster
+      values_template: heapster-values.yaml.j2
 
 - name: Fix Kubernetes Dashboard
   include_tasks: dashboard.yaml

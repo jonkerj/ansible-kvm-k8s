@@ -10,6 +10,7 @@ acme:
   email: {{ traefik_acme_email }}
   staging: false
   logging: true
+cpuRequest: 50m
 dashboard:
   enabled: true
   domain: {{ traefik_dashboard_domain }}
