@@ -93,6 +93,27 @@ helm_charts:
     resources:
       requests:
         cpu: 50m
+- name: 'Harbor'
+  release_name: harbor
+  namespace: harbor
+  src:
+    type: git
+    remote: https://github.com/goharbor/harbor-helm
+    version: master
+  values:
+    expose:
+      tls:
+        enabled: false
+      ingress:
+        hosts:
+          core: registry.k8s.efgh.nl
+          notary: notary.k8s.efgh.nl
+      resources:
+        requests:
+          cpu: 50m
+    persistence:
+      resourcePolicy: discard
+    externalURL: https://registry.k8s.efgh.nl
 kube_proxy_cpu_requests: 50m
 kube_read_only_port: 10255
 loadbalancer_apiserver:
