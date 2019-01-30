@@ -5,8 +5,8 @@
     state: directory
 
 - name: Template values.yaml
-  template:
-    src: "{{ helm.values_template }}"
+  copy:
+    content: '{{ helm["values"] | to_nice_yaml }}'
     dest: "{{ helm_values_dir }}/{{ helm.release_name }}.yaml"
 
 - name: Wait for Tiller to be ready
@@ -16,7 +16,38 @@
   command: 'helm list ^{{ helm.release_name }}$'
   register: helm_list
 
-- name: Install Helm chart {{ helm.chart }}
-  command: "helm install -f {{ helm_values_dir }}/{{ helm.release_name }}.yaml --namespace {{ helm.namespace }} -n {{ helm.release_name }} {{ helm.chart }}"
-  when: 'helm.release_name not in helm_list.stdout'
+- name: Install Helm chart {{ helm.release_name }}
+  command: "helm install -f {{ helm_values_dir }}/{{ helm.release_name }}.yaml --namespace {{ helm.namespace }} -n {{ helm.release_name }} {{ helm.src.chart }}"
+  when: 'helm.release_name not in helm_list.stdout and helm.src.type == "chart"'
+
+- name: Create temporary directory
+  tempfile:
+    state: directory
+  register: helmdir
+  when: 'helm.release_name not in helm_list.stdout and helm.src.type == "git"'
+
+- name: Clone the helm repository
+  git:
+    repo: '{{ helm.src.remote }}'
+    version: '{{ helm.src.version }}'
+    dest: '{{ helmdir.path }}'
+  when: 'helm.release_name not in helm_list.stdout and helm.src.type == "git"'
+
+- name: Update helm dependencies
+  command: 'helm dependency update'
+  args:
+    chdir: '{{ helmdir.path }}'
+  when: 'helm.release_name not in helm_list.stdout and helm.src.type == "git"'
+
+- name: Install chart
+  command: 'helm --namespace {{ helm.namespace }} --name {{ helm.release_name }} --values {{ helm_values_dir }}/{{ helm.release_name }}.yaml install ./'
+  args:
+    chdir: '{{ helmdir.path }}'
+  when: 'helm.release_name not in helm_list.stdout and helm.src.type == "git"'
+
+- name: Remove tempdir
+  file:
+    path: '{{ helmdir.path }}'
+    state: absent
+  when: 'helm.release_name not in helm_list.stdout and helm.src.type == "git"'
 ...

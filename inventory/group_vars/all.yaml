@@ -9,15 +9,10 @@ kube_read_only_port: 10255
 loadbalancer_apiserver:
   address: 185.76.17.60
   port: 6443
-nfs_shares:
-- name: sata
-  server: 172.21.45.1
-  path: /srv/k8s-sata
-  default: true
-- name: ssd
-  server: 172.21.45.1
-  path: /srv/k8s-ssd
-  default: false
+nfs_sata_server: 172.21.45.1
+nfs_sata_share: /srv/k8s-sata
+nfs_ssd_server: 172.21.45.1
+nfs_ssd_share: /srv/k8s-ssd
 traefik_dashboard_domain: traefik.k8s.efgh.nl
 traefik_acme_email: jorik@kippendief.biz
 ...
