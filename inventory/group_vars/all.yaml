@@ -2,6 +2,7 @@
 apiserver_loadbalancer_domain_name: "k8s.efgh.nl"
 calico_node_cpu_requests: 50m
 dns_cpu_requests: 50m
+dns_min_replicas: 1
 helm_values_dir: '{{ inventory_dir }}/../helm-values'
 kube_proxy_cpu_requests: 50m
 kube_read_only_port: 10255

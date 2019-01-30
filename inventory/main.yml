@@ -4,26 +4,16 @@ all:
     localhost:
     kube1:
       ansible_host: 172.21.45.2
-    kube2:
-      ansible_host: 172.21.45.3
-    kube3:
-      ansible_host: 172.21.45.4
   children:
     k8s-cluster:
       children:
         kube-master:
           hosts:
             kube1:
-            kube2:
-            kube3:
         kube-node:
           hosts:
             kube1:
-            kube2:
-            kube3:
     etcd:
       hosts:
         kube1:
-        kube2:
-        kube3:
 ...
