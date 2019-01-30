@@ -21,6 +21,12 @@
     file:
       path: "{{ hostvars[virt_host].virt_images }}/{{ inventory_hostname }}.qcow2"
       state: absent
+  - name: remove backing file
+    delegate_to: "{{ virt_host }}"
+    run_once: true
+    file:
+      path: "{{ hostvars[virt_host].virt_images }}/{{ virt_base_image }}.qcow2"
+      state: absent
   - name: remove ignition config
     delegate_to: "{{ virt_host }}"
     file:
