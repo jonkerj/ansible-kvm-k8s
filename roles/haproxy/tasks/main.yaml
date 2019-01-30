@@ -1,0 +1,8 @@
+---
+- name: Template HAProxy config
+  delegate_to: '{{ proxy_host }}'
+  become: yes
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+...

@@ -1,0 +1,16 @@
+---
+haproxy_loadbalancers:
+  bind:
+  - 185.76.17.60
+  - 2001:1540:801:2::3
+  frontends:
+  - name: http
+    frontend_port: 80
+    backend_port: 30080
+  - name: https
+    frontend_port: 443
+    backend_port: 30443
+  - name: api
+    frontend_port: 6443
+    backend_port: 6443
+...
