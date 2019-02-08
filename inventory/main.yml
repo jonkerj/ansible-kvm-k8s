@@ -2,34 +2,46 @@
 all:
   hosts:
     localhost:
-    kube1:
+    master1:
       ansible_host: 172.21.46.8
       mac: 06:e2:11:7f:cf:01
       vmid: 151
-    kube2:
+    master2:
       ansible_host: 172.21.46.9
       mac: 06:e2:11:7f:cf:02
       vmid: 152
-    kube3:
+    master3:
       ansible_host: 172.21.46.10
       mac: 06:e2:11:7f:cf:03
       vmid: 153
+    worker1:
+      ansible_host: 172.21.46.11
+      mac: 06:e2:11:7f:cf:04
+      vmid: 154
+    worker2:
+      ansible_host: 172.21.46.12
+      mac: 06:e2:11:7f:cf:05
+      vmid: 155
+    worker3:
+      ansible_host: 172.21.46.13
+      mac: 06:e2:11:7f:cf:06
+      vmid: 156
   children:
     k8s-cluster:
       children:
         kube-master:
           hosts:
-            kube1:
-            kube2:
-            kube3:
+            master1:
+            master2:
+            master3:
         kube-node:
           hosts:
-            kube1:
-            kube2:
-            kube3:
+            worker1:
+            worker2:
+            worker3:
     etcd:
       hosts:
-        kube1:
-        kube2:
-        kube3:
+        master1:
+        master2:
+        master3:
 ...
