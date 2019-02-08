@@ -5,23 +5,6 @@ dns_cpu_requests: 50m
 dns_min_replicas: 1
 helm_values_dir: '{{ inventory_dir }}/../helm-values'
 helm_charts:
-- name: 'NFS Client Provisioner (sata)'
-  release_name: 'nfs-sata'
-  namespace: nfs
-  src:
-    type: chart
-    chart: stable/nfs-client-provisioner
-  values:
-    nfs:
-      server: '{{ nfs_sata_server }}'
-      path: '{{ nfs_sata_share }}'
-    storageClass:
-      name: sata
-      defaultClass: true
-      archiveOnDelete: false
-    resources:
-      requests:
-        cpu: 50m
 - name: 'NFS Client Provisioner (ssd)'
   release_name: 'nfs-ssd'
   namespace: nfs
@@ -34,7 +17,7 @@ helm_charts:
       path: '{{ nfs_ssd_share }}'
     storageClass:
       name: ssd
-      defaultClass: false
+      defaultClass: true
       archiveOnDelete: false
     resources:
       requests:
@@ -119,10 +102,8 @@ kube_read_only_port: 10255
 loadbalancer_apiserver:
   address: 185.76.17.60
   port: 6443
-nfs_sata_server: 172.21.46.1
-nfs_sata_share: /srv/k8s-sata
-nfs_ssd_server: 172.21.46.1
-nfs_ssd_share: /srv/k8s-ssd
+nfs_ssd_server: 172.21.46.2
+nfs_ssd_share: /ssd/k8s
 traefik_dashboard_domain: traefik.k8s.efgh.nl
 traefik_acme_email: jorik@kippendief.biz
 ...
