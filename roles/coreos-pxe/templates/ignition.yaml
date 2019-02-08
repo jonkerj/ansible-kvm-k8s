@@ -1,0 +1,34 @@
+storage:
+  disks:
+  - device: /dev/vda
+    wipe_table: true
+    partitions:
+    - label: ROOT
+  filesystems:
+  - mount:
+      device: /dev/disk/by-partlabel/ROOT
+      format: ext4
+      wipe_filesystem: true
+      label: ROOT
+  files:
+  - path: "/etc/hostname"
+    filesystem: "root"
+    contents:
+      inline: {{ inventory_hostname }}
+passwd:
+  users:
+  - name: "core"
+    ssh_authorized_keys:
+    - {{ virt_ssh_key }}
+networkd:
+  units:
+  - name: 00-eth0.network
+    contents: |
+      [Match]
+      Name=eth0
+
+      [Network]
+      DNS=77.222.77.222
+      DNS=87.249.121.121
+      Address={{ ansible_host }}/{{ virt_prefix_length }}
+      Gateway={{ virt_gateway }}

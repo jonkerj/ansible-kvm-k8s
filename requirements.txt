@@ -7,4 +7,5 @@ logger
 netaddr
 openshift
 pbr>=1.6
+proxmoxer
 pyhelm

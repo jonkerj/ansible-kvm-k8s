@@ -1,0 +1,124 @@
+---
+- name: Make sure CoreOS iPXE dir exists
+  delegate_to: localhost
+  run_once: yes
+  file:
+    path: /var/lib/tftpboot/coreos
+    state: directory
+    mode: 0755
+
+- name: Template iPXE script
+  delegate_to: localhost
+  run_once: yes
+  template:
+    src: script.ipxe
+    dest: '/var/lib/tftpboot/coreos/coreos.ipxe'
+  vars:
+    config_url: 'tftp://172.21.46.1/coreos'
+
+- name: Template Ignition YAML
+  delegate_to: localhost
+  copy:
+    content: '{{ coreos_ignition | to_nice_yaml }}'
+    dest: '/var/lib/tftpboot/coreos/{{ inventory_hostname }}.yaml'
+
+- name: Transpile Container Linux YAML to Ignition JSON
+  delegate_to: localhost
+  command: 'ct -in-file /var/lib/tftpboot/coreos/{{ inventory_hostname }}.yaml -out-file /var/lib/tftpboot/coreos/{{ inventory_hostname }}.ign'
+
+- name: Symlink Ignition file
+  delegate_to: localhost
+  file:
+    src: '{{ inventory_hostname }}.ign'
+    dest: '/var/lib/tftpboot/coreos/{{ mac | lower }}.ign'
+    state: link
+
+- name: Create VM
+  delegate_to: localhost
+  proxmox_kvm:
+    node: '{{ pve.node }}'
+    api_user: '{{ pve.user }}'
+    api_password: '{{ pve.password }}'
+    api_host: '{{ pve.host }}'
+    name: '{{ inventory_hostname }}'
+    sockets: '{{ pve.hw.sockets }}'
+    cores: '{{ pve.hw.cores }}'
+    machine: pc-i440fx-2.12
+    memory: '{{ pve.hw.memory }}'
+    net:
+      net0: 'virtio={{ mac }},bridge={{ pve.hw.bridge }}'
+    virtio:
+      virtio0: '{{ pve.hw.storage }}:20'
+    boot: cn
+    ostype: l26
+    state: present
+    vmid: '{{ vmid }}'
+
+- name: Wait for VM to appear
+  delegate_to: localhost
+  retries: 5
+  delay: 12
+  register: vm
+  until: '"status" in vm'
+  proxmox_kvm:
+    node: '{{ pve.node }}'
+    api_user: '{{ pve.user }}'
+    api_password: '{{ pve.password }}'
+    api_host: '{{ pve.host }}'
+    name: '{{ inventory_hostname }}'
+    state: current
+
+- name: Start VM
+  delegate_to: localhost
+  proxmox_kvm:
+    node: '{{ pve.node }}'
+    api_user: '{{ pve.user }}'
+    api_password: '{{ pve.password }}'
+    api_host: '{{ pve.host }}'
+    name: '{{ inventory_hostname }}'
+    state: started
+
+- name: Wait for VM to be up
+  delegate_to: localhost
+  wait_for:
+    host: '{{ ansible_host }}'
+    port: 22
+
+- name: Examine root mount
+  raw: "/usr/bin/grep '^/dev/vda.* / ' /proc/mounts"
+  register: mountgrep
+  failed_when: mountgrep.rc != 0 and mountgrep.rc != 1
+  changed_when: false
+
+- name: Bootstrap CoreOS
+  when: mountgrep.rc == 1
+  block:
+  - name: Download ignition
+    raw: "/usr/bin/curl -L -o /tmp/ignition.json https://efgh.nl/coreos/{{ inventory_hostname }}.ign"
+
+  - name: Run CoreOS-install
+    raw: "/usr/bin/coreos-install -i /tmp/ignition.json -C stable -d /dev/vda"
+
+  - name: Restart
+    delegate_to: localhost
+    proxmox_kvm:
+      node: '{{ pve.node }}'
+      api_user: '{{ pve.user }}'
+      api_password: '{{ pve.password }}'
+      api_host: '{{ pve.host }}'
+      name: '{{ inventory_hostname }}'
+      state: restarted
+  
+  - name: Wait for reboot to happen
+    delegate_to: localhost
+    wait_for:
+      host: '{{ ansible_host }}'
+      port: 22
+      state: stopped
+
+  - name: Wait for reboot to finish
+    delegate_to: localhost
+    wait_for:
+      host: '{{ ansible_host }}'
+      port: 22
+...

@@ -1,6 +1,6 @@
 ---
-- hosts: kube-master
+- hosts: k8s-cluster
   gather_facts: false
   roles:
-  - { role: create-vm }
+  - { role: coreos-pxe }
 ...

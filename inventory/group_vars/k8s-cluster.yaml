@@ -3,19 +3,59 @@ ansible_become: true
 ansible_python_interpreter: /opt/bin/python
 ansible_user: core
 bin_dir: /opt/bin
-coreos_image_url: https://stable.release.core-os.net/amd64-usr/current/coreos_production_qemu_image.img.bz2
+coreos_ignition:
+  storage:
+    files:
+    - path: "/etc/hostname"
+      filesystem: "root"
+      contents:
+        inline: '{{ inventory_hostname }}'
+  passwd:
+    users:
+    - name: "core"
+      ssh_authorized_keys:
+      - '{{ virt_ssh_key }}'
+  networkd:
+    units:
+    - name: 00-eth0.network
+      contents: |
+        [Match]
+        Name=eth0
+
+        [Network]
+        DNS=77.222.77.222
+        DNS=87.249.121.121
+        Address={{ ansible_host }}/{{ virt_prefix_length }}
+        Gateway={{ virt_gateway }}
+coreos_version: 1967.4.0
 etcd_data_dir: /var/lib/etcd
 helm_enabled: true
 kube_network_plugin: calico
 kube_proxy_mode: iptables
+pve:
+  user: root@pam
+  host: pve.efgh.nl:443
+  password: !vault |
+    $ANSIBLE_VAULT;1.1;AES256
+    37623461333632363330363364653438353664343361343365666230383631656437623838313562
+    6562623931373661343039373134653137613663646162630a626438343763613034336334663361
+    63616662323362626136323162313933356636666335373864643137633438306661383164306466
+    6363303138313631650a663731346238353834333332336634373566663436346637656631653834
+    6238
+  node: pve
+  hw:
+    bridge: vmbr0
+    storage: ssd
+    memory: 4096
+    sockets: 2
+    cores: 1
 resolvconf_mode: host_resolvconf
 upstream_dns_servers:
-- 87.249.121.121
-- 77.222.77.222
+- 172.21.46.1
 virt_base_image: kube-base
 virt_bridge: br0
 virt_vcpu: 2
-virt_gateway: 172.21.45.1
+virt_gateway: 172.21.46.1
 virt_host: localhost
 virt_memory_gb: 8
 virt_prefix_length: 24
