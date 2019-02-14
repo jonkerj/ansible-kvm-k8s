@@ -27,7 +27,7 @@ coreos_ignition:
         DNS=87.249.121.121
         Address={{ ansible_host }}/{{ virt_prefix_length }}
         Gateway={{ virt_gateway }}
-coreos_version: 1967.4.0
+coreos_version: 1967.6.0
 etcd_data_dir: /var/lib/etcd
 helm_enabled: true
 kube_network_plugin: calico
