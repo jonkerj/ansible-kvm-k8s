@@ -40,6 +40,10 @@ helm_charts:
     dashboard:
       enabled: true
       domain: '{{ traefik_dashboard_domain }}'
+    proxyProtocol:
+      enabled: true
+      trustedIPs:
+      - 172.21.46.1
     rbac:
       enabled: true
     ssl:
