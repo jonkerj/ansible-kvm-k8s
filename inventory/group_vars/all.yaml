@@ -1,7 +1,7 @@
 ---
 apiserver_loadbalancer_domain_name: "k8s.efgh.nl"
-calico_node_cpu_requests: 50m
-dns_cpu_requests: 50m
+calico_node_cpu_requests: 150m
+dns_cpu_requests: 150m
 dns_min_replicas: 1
 helm_values_dir: '{{ inventory_dir }}/../helm-values'
 helm_charts:
@@ -19,9 +19,6 @@ helm_charts:
       name: ssd
       defaultClass: true
       archiveOnDelete: false
-    resources:
-      requests:
-        cpu: 50m
 - name: 'Traefik'
   release_name: traefik
   namespace: traefik
@@ -40,7 +37,6 @@ helm_charts:
       email: '{{ traefik_acme_email }}'
       staging: false
       logging: true
-    cpuRequest: 50m
     dashboard:
       enabled: true
       domain: '{{ traefik_dashboard_domain }}'
@@ -49,6 +45,13 @@ helm_charts:
     ssl:
       enabled: true
       insecureSkipVerify: true
+    resources:
+      requests:
+        cpu: 125m
+        memory: 100Mi
+      limits:
+        cpu: 500m
+        memory: 500Mi
 - name: 'Heapster'
   release_name: heapster
   namespace: kube-system
@@ -56,9 +59,6 @@ helm_charts:
     type: chart
     chart: stable/heapster
   values:
-    resources:
-      requests:
-        cpu: 50m
 - name: 'Nextcloud'
   release_name: nextcloud
   namespace: nextcloud
@@ -73,9 +73,6 @@ helm_charts:
     serviceType: ClusterIP
     ingress: 
       enabled: true
-    resources:
-      requests:
-        cpu: 50m
 - name: 'Harbor'
   release_name: harbor
   namespace: harbor
@@ -97,7 +94,7 @@ helm_charts:
     persistence:
       resourcePolicy: discard
     externalURL: https://registry.k8s.efgh.nl
-kube_proxy_cpu_requests: 50m
+kube_proxy_cpu_requests: 150m
 kube_read_only_port: 10255
 loadbalancer_apiserver:
   address: 185.76.17.60
