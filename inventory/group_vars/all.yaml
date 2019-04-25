@@ -18,6 +18,20 @@ helm_charts:
       name: ssd
       defaultClass: true
       archiveOnDelete: false
+- name: 'NFS Client Provisioner (sas)'
+  release_name: 'nfs-sas'
+  namespace: nfs
+  src:
+    type: chart
+    chart: stable/nfs-client-provisioner
+  values:
+    nfs:
+      server: '{{ nfs_sas_server }}'
+      path: '{{ nfs_sas_share }}'
+    storageClass:
+      name: sas
+      defaultClass: false
+      archiveOnDelete: false
 - name: 'Traefik'
   release_name: traefik
   namespace: traefik
@@ -83,6 +97,8 @@ loadbalancer_apiserver:
   port: 6443
 nfs_ssd_server: 172.21.46.2
 nfs_ssd_share: /ssd/k8s
+nfs_sas_server: 172.21.46.2
+nfs_sas_share: /rpool/k8s
 traefik_dashboard_domain: traefik.k8s.efgh.nl
 traefik_acme_email: jorik@kippendief.biz
 ...
