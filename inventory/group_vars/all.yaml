@@ -14,6 +14,8 @@ helm_charts:
     nfs:
       server: '{{ nfs_ssd_server }}'
       path: '{{ nfs_ssd_share }}'
+      mountOptions:
+      - nfsvers=4.0
     storageClass:
       name: ssd
       defaultClass: true
@@ -28,6 +30,8 @@ helm_charts:
     nfs:
       server: '{{ nfs_sas_server }}'
       path: '{{ nfs_sas_share }}'
+      mountOptions:
+      - nfsvers=4.0
     storageClass:
       name: sas
       defaultClass: false
