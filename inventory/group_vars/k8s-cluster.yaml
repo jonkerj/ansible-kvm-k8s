@@ -32,6 +32,7 @@ etcd_data_dir: /var/lib/etcd
 helm_enabled: true
 kube_network_plugin: calico
 kube_proxy_mode: iptables
+metrics_server_enabled: true
 pve:
   user: root@pam
   host: pve.efgh.nl:443
