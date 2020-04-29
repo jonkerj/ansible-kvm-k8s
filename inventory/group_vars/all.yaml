@@ -1,6 +1,7 @@
 ---
 apiserver_loadbalancer_domain_name: "k8s.efgh.nl"
 calico_node_cpu_requests: 150m
+dashboard_enabled: false
 dns_cpu_requests: 150m
 helm_values_dir: '{{ inventory_dir }}/../helm-values'
 helm_charts:
