@@ -1,6 +1,7 @@
 ansible==2.9.6
 hvac==0.10.0
 jinja2==2.11.1
+grpcio
 libvirt-python
 logger
 netaddr==0.7.19
