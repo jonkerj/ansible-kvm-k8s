@@ -1,4 +1,4 @@
-ansible==2.9.6
+ansible==2.9.20
 hvac==0.10.0
 jinja2==2.11.3
 grpcio
